@@ -1,17 +1,17 @@
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Data Cake</Text>
 
       <Text style={styles.texto1}>Bem-Vindo!</Text>
 
-      <Pressable style={styles.botao} onPress={() => alert('Entrar')}>
+      <Pressable style={styles.botao} onPress={() => navigation.navigate('Login')}>
         <Text style={styles.textoBotao}>Entrar</Text>
       </Pressable>
-
-      <Pressable style={styles.botaoSecundario} onPress={() => alert('Criar conta')}>
+ 
+      <Pressable style={styles.botaoSecundario} onPress={() => navigation.navigate('Register')}>
         <Text style={styles.textoBotao}>Criar Conta</Text>
       </Pressable>
     </View>
