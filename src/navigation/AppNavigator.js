@@ -19,7 +19,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Tasks" component={TaskListScreen} />
-      </Stack.Navigator>r
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

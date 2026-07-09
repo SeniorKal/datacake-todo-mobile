@@ -48,6 +48,11 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginBottom: 10,
         alignItems: 'center', 
-    }
+    },
+    textoBotao: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 
 });
