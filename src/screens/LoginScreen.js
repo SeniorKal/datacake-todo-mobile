@@ -1,20 +1,35 @@
 import { StyleSheet, View, Text, TextInput, Pressable } from 'react-native';
+import {useState} from 'react';
 
 export default function LoginScreen() {
+    const [email, setEmail]= useState('');
+    const [password, setPassword]=useState('');
     return (
         <View style={styles.container}>
             <Text style={styles.texto}>Login Screen</Text>
             <TextInput
                 style={styles.Input}
                 placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
             />
             <TextInput
                 style={styles.Input}
                 placeholder="Password"
+                value={password}
+                onChangeText={setPassword}
                 secureTextEntry
             />
             <Pressable
-                style={styles.botao}>
+                style={styles.botao} 
+                onPress={() => { 
+                if (email === ""|| password === ""){
+                        alert ('Preencha todos os campos');
+                        return;
+                    }
+                alert('login realizado!');
+            }}
+            >
                 <Text style={styles.textoBotao}>Entrar</Text>
             </Pressable>
         </View>
