@@ -6,7 +6,7 @@ export default function LoginScreen() {
     const [password, setPassword]=useState('');
     return (
         <View style={styles.container}>
-            <Text style={styles.texto}>Login Screen</Text>
+            <Text style={styles.texto}>Login</Text>
             <TextInput
                 style={styles.Input}
                 placeholder="Email"
