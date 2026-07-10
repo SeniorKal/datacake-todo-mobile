@@ -1,0 +1,428 @@
+# Registro de Desenvolvimento — Mobile
+
+Este documento registra, em ordem cronológica, as etapas realizadas no desenvolvimento do aplicativo mobile DataCake Todo, as decisões técnicas tomadas e a utilização de ferramentas de Inteligência Artificial durante o processo.
+
+Algumas etapas iniciais foram documentadas retroativamente com base no histórico de commits, nos arquivos criados e no processo realizado durante o desenvolvimento.
+
+---
+
+## 1. Criação inicial do projeto React Native
+
+Foi criada a estrutura inicial do aplicativo mobile utilizando React Native.
+
+O projeto foi preparado com os arquivos e pastas padrão necessários para iniciar o desenvolvimento da aplicação.
+
+Entre os arquivos principais estão:
+
+```text
+App.js
+app.json
+index.js
+package.json
+package-lock.json
+```
+
+Também foram mantidas pastas como:
+
+```text
+assets/
+src/
+```
+
+### Decisão técnica
+
+Foi escolhida uma estrutura baseada em React Native por ser a tecnologia exigida no desafio e permitir o desenvolvimento de uma aplicação mobile utilizando JavaScript e componentes reutilizáveis.
+
+### Uso de IA
+
+A IA foi utilizada para explicar a estrutura inicial do projeto, a função dos arquivos principais e orientar os primeiros passos sem substituir a análise manual do código.
+
+---
+
+## 2. Organização inicial das pastas
+
+O código da aplicação passou a ser organizado dentro da pasta:
+
+```text
+src/
+```
+
+Foram criadas pastas com responsabilidades específicas, como:
+
+```text
+src/screens/
+src/navigation/
+src/components/
+```
+
+A pasta `screens` foi utilizada para armazenar as telas principais.
+
+A pasta `navigation` foi reservada para a configuração da navegação entre as telas.
+
+A pasta `components` foi criada para receber componentes reutilizáveis da interface.
+
+### Decisão técnica
+
+A organização foi feita para evitar que todo o código permanecesse concentrado no arquivo `App.js`.
+
+Separar as responsabilidades facilita a leitura, manutenção e expansão do aplicativo.
+
+### Uso de IA
+
+A IA foi utilizada para sugerir uma estrutura organizada de pastas e explicar a diferença entre telas, componentes e arquivos de navegação.
+
+---
+
+## 3. Criação da tela de boas-vindas
+
+Foi criada a tela:
+
+```text
+WelcomeScreen.js
+```
+
+A tela de boas-vindas funciona como ponto inicial do aplicativo.
+
+Ela apresenta a identidade inicial da aplicação e opções para o usuário seguir para login ou cadastro.
+
+Durante o processo, a tela que inicialmente estava concentrada no arquivo principal foi movida para um arquivo próprio.
+
+### Decisão técnica
+
+A tela foi separada em um arquivo dedicado para manter o `App.js` mais simples e deixar cada tela responsável apenas por sua própria interface.
+
+### Uso de IA
+
+A IA foi utilizada para explicar a criação de componentes funcionais e orientar a separação da tela em um arquivo específico.
+
+---
+
+## 4. Refatoração da tela inicial
+
+A implementação inicial da tela de boas-vindas foi reorganizada.
+
+O código visual da tela foi removido do arquivo principal e transferido para:
+
+```text
+src/screens/WelcomeScreen.js
+```
+
+O arquivo `App.js` passou a ter uma responsabilidade menor, ficando mais próximo de um ponto de entrada e configuração da aplicação.
+
+### Decisão técnica
+
+A refatoração foi realizada para melhorar a separação de responsabilidades e preparar o projeto para receber novas telas.
+
+### Uso de IA
+
+A IA foi utilizada para explicar o conceito de refatoração e a importância de evitar arquivos muito grandes ou com funções diferentes misturadas.
+
+---
+
+## 5. Instalação e configuração da navegação
+
+Foi configurado o React Navigation para permitir a troca entre as telas da aplicação.
+
+Foram instaladas as dependências necessárias e criada a estrutura de navegação dentro da pasta:
+
+```text
+src/navigation/
+```
+
+O aplicativo passou a utilizar um navegador responsável por controlar o fluxo entre as telas.
+
+As telas foram registradas na navegação para que pudessem ser acessadas por nome.
+
+### Decisão técnica
+
+Foi utilizado o React Navigation por ser uma solução consolidada para navegação em aplicativos React Native.
+
+A navegação foi isolada em uma pasta própria para evitar que a configuração ficasse misturada com a interface das telas.
+
+### Uso de IA
+
+A IA foi utilizada para explicar o funcionamento do `NavigationContainer`, dos navegadores e do método `navigate`.
+
+Os comandos de instalação e a configuração foram analisados antes da aplicação.
+
+---
+
+## 6. Integração da navegação no `App.js`
+
+O arquivo:
+
+```text
+App.js
+```
+
+foi ajustado para carregar a estrutura de navegação da aplicação.
+
+Com isso, o aplicativo deixou de renderizar uma única tela diretamente e passou a utilizar o fluxo configurado no navegador.
+
+### Decisão técnica
+
+O `App.js` foi mantido simples, servindo principalmente como ponto de entrada da aplicação.
+
+### Uso de IA
+
+A IA foi utilizada para explicar por que a navegação deve envolver as telas e como o componente principal se conecta ao navegador.
+
+---
+
+## 7. Criação da tela de login
+
+Foi criada a tela:
+
+```text
+LoginScreen.js
+```
+
+A interface passou a incluir campos para:
+
+- e-mail;
+- senha.
+
+Também foi incluído um botão para realizar o login e opções de navegação para outras telas do fluxo de autenticação.
+
+### Decisão técnica
+
+A tela foi criada separadamente para manter o fluxo de autenticação organizado e facilitar a futura integração com a API Django.
+
+### Uso de IA
+
+A IA foi utilizada para orientar a construção da interface e explicar a responsabilidade de cada componente utilizado no formulário.
+
+---
+
+## 8. Correções na navegação e na tela de login
+
+Durante a integração da tela de login, foram identificados e corrigidos problemas relacionados à navegação e à organização da tela.
+
+As correções garantiram que:
+
+- a tela fosse aberta corretamente;
+- os nomes das rotas correspondessem aos registrados no navegador;
+- os botões direcionassem para as telas esperadas.
+
+### Decisão técnica
+
+Os erros foram corrigidos antes da criação de novas funcionalidades para evitar que problemas de navegação se acumulassem.
+
+### Uso de IA
+
+A IA foi utilizada como apoio para analisar mensagens de erro e explicar a relação entre o nome registrado de uma rota e o nome utilizado no método `navigate`.
+
+---
+
+## 9. Controle de estado no formulário de login
+
+Foi utilizado o hook:
+
+```javascript
+useState
+```
+
+para armazenar os valores digitados nos campos do formulário.
+
+Foram criados estados para informações como:
+
+- e-mail;
+- senha.
+
+Os campos passaram a ser controlados pelo React.
+
+Isso significa que o valor exibido em cada campo é armazenado no estado do componente e atualizado por meio de eventos de alteração.
+
+### Decisão técnica
+
+Foi utilizada a abordagem de componentes controlados para permitir futuras validações e o envio dos dados para a API.
+
+### Uso de IA
+
+A IA foi utilizada para explicar o funcionamento do `useState`, a atualização de estado e a relação entre `value` e `onChangeText`.
+
+---
+
+## 10. Validação inicial do formulário de login
+
+Foi adicionada uma validação inicial antes da ação de login.
+
+A validação verifica se os campos obrigatórios foram preenchidos.
+
+Quando os dados não estão válidos, o aplicativo apresenta uma mensagem ao usuário em vez de continuar com a operação.
+
+### Decisão técnica
+
+A validação foi adicionada no frontend para fornecer um retorno rápido ao usuário.
+
+Mesmo assim, as validações também serão realizadas no backend, pois o aplicativo não deve ser a única camada responsável por proteger os dados.
+
+### Uso de IA
+
+A IA foi utilizada para explicar a diferença entre validação no frontend e validação no backend.
+
+A lógica foi analisada para evitar depender apenas da interface.
+
+---
+
+## 11. Criação da tela de cadastro
+
+Foi criada a tela:
+
+```text
+RegisterScreen.js
+```
+
+A interface de cadastro contém campos necessários para a criação de uma nova conta.
+
+Entre os dados trabalhados estão:
+
+- nome;
+- e-mail;
+- senha;
+- confirmação de senha.
+
+Também foram adicionadas opções para retornar ao fluxo de login.
+
+### Decisão técnica
+
+A tela foi mantida separada da tela de login para deixar cada fluxo com uma responsabilidade clara.
+
+### Uso de IA
+
+A IA foi utilizada para auxiliar na estrutura da tela e explicar a reutilização de padrões semelhantes aos utilizados no login.
+
+---
+
+## 12. Controle de estado no formulário de cadastro
+
+O hook:
+
+```javascript
+useState
+```
+
+também foi utilizado na tela de cadastro.
+
+Cada campo possui seu próprio estado, permitindo armazenar e validar os dados antes do envio.
+
+### Decisão técnica
+
+Foi mantido o mesmo padrão utilizado na tela de login para garantir consistência entre os formulários.
+
+### Uso de IA
+
+A IA foi utilizada para reforçar o funcionamento de estados independentes e a importância de nomes claros para cada variável.
+
+---
+
+## 13. Validação inicial do formulário de cadastro
+
+Foram adicionadas validações iniciais para impedir o envio de informações inválidas.
+
+Entre as verificações estão:
+
+- campos obrigatórios não preenchidos;
+- senha e confirmação de senha diferentes.
+
+O usuário recebe uma mensagem quando existe algum problema antes da tentativa de cadastro.
+
+### Decisão técnica
+
+As validações foram adicionadas para melhorar a experiência do usuário e evitar requisições desnecessárias para o backend.
+
+As regras também serão validadas novamente pela API.
+
+### Uso de IA
+
+A IA foi utilizada para explicar a importância de não confiar apenas nas validações do aplicativo e manter regras equivalentes no backend.
+
+---
+
+## 14. Criação da tela de lista de tarefas
+
+Foi criada a tela:
+
+```text
+TaskListScreen.js
+```
+
+Essa tela será responsável por exibir e gerenciar as tarefas do usuário.
+
+Ela servirá de base para implementar posteriormente:
+
+- listagem;
+- criação;
+- edição;
+- conclusão;
+- exclusão;
+- filtros por status;
+- filtros por data.
+
+### Decisão técnica
+
+A tela foi criada antecipadamente para completar o fluxo principal de navegação e preparar a futura integração com a API.
+
+### Uso de IA
+
+A IA foi utilizada para discutir a responsabilidade da tela e a organização futura das funções relacionadas às tarefas.
+
+---
+
+## 15. Estrutura atual de telas
+
+Até esta etapa, o aplicativo possui as seguintes telas:
+
+```text
+src/screens/WelcomeScreen.js
+src/screens/LoginScreen.js
+src/screens/RegisterScreen.js
+src/screens/TaskListScreen.js
+```
+
+A navegação entre elas já está preparada.
+
+### Decisão técnica
+
+A estrutura foi mantida simples nesta etapa, priorizando primeiro o fluxo visual e a organização antes da integração com o backend.
+
+### Uso de IA
+
+A IA foi utilizada para ajudar a planejar uma sequência de desenvolvimento incremental.
+
+---
+
+## 16. Organização do histórico de commits
+
+As alterações do aplicativo foram separadas em commits de acordo com sua responsabilidade.
+
+Entre as etapas registradas estão:
+
+```text
+Initial commit
+feat: add welcome screen layout
+refactor: move welcome screen to dedicated file
+feat: implement app navigation
+feat: create login screen layout
+fix: resolve navigation and login screen issues
+feat: add login form state validation
+feat: create register screen layout and validation
+```
+
+### Decisão técnica
+
+Foi evitado concentrar todo o desenvolvimento em um único commit.
+
+Cada commit representa uma etapa lógica do projeto, facilitando a leitura do histórico e a revisão das alterações.
+
+### Uso de IA
+
+A IA foi utilizada para sugerir mensagens de commit mais claras e organizadas.
+
+Antes dos commits, as alterações foram verificadas com:
+
+```bash
+git status
+```
+
+---
