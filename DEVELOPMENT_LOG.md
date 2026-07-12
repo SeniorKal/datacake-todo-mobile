@@ -425,4 +425,106 @@ Antes dos commits, as alterações foram verificadas com:
 git status
 ```
 
----
+## 17. Integração do cadastro mobile com a API
+
+Foi realizada a primeira integração funcional entre o aplicativo React Native e o backend Django.
+
+Inicialmente, foi criado o arquivo:
+
+```text
+src/services/api.js
+```
+
+Esse arquivo centraliza o endereço do backend e as funções responsáveis pela comunicação HTTP com a API.
+
+### Teste inicial de conexão
+
+Foi criada uma função para acessar o endpoint:
+
+```text
+GET /api/health/
+```
+
+A função foi chamada temporariamente na `WelcomeScreen` utilizando o hook `useEffect`.
+
+O teste confirmou que o aplicativo executado no Expo Go conseguia acessar o servidor Django pela rede local.
+
+Para permitir o acesso pelo celular, o servidor foi iniciado com:
+
+```bash
+python manage.py runserver 0.0.0.0:8000
+```
+
+Também foi adicionado o endereço IP local do computador ao `ALLOWED_HOSTS` do Django.
+
+A resposta recebida no aplicativo foi:
+
+```json
+{
+  "status": "ok"
+}
+```
+
+### Serviço de cadastro
+
+Foi adicionada ao `api.js` uma função responsável por enviar os dados de cadastro ao endpoint:
+
+```text
+POST /api/register/
+```
+
+A função utiliza `fetch` para enviar os dados em formato JSON.
+
+O objeto enviado contém:
+
+```text
+email
+password
+password_confirm
+```
+
+As respostas do backend também são convertidas de JSON para objetos JavaScript.
+
+Quando a API retorna um erro, os dados da resposta são lançados para que a tela consiga apresentar a mensagem correspondente ao usuário.
+
+### Refatoração da tela de cadastro
+
+A lógica que anteriormente estava escrita diretamente dentro do botão foi movida para uma função assíncrona chamada:
+
+```text
+handleRegister
+```
+
+Essa função passou a ser responsável por:
+
+- verificar campos vazios;
+- comparar senha e confirmação;
+- chamar o serviço de cadastro;
+- mostrar mensagens de sucesso;
+- apresentar erros retornados pela API;
+- navegar para a tela de login após o cadastro.
+
+Essa alteração deixou o componente visual mais simples e separou a interface da lógica da tela.
+
+### Testes realizados
+
+Foram testados os seguintes cenários pelo aplicativo no Expo Go:
+
+- criação de uma conta válida;
+- tentativa de utilizar um e-mail já cadastrado;
+- envio de senhas diferentes;
+- envio de campos vazios.
+
+Foi criada com sucesso uma conta pelo aplicativo mobile, e sua existência foi confirmada no painel administrativo do Django.
+
+### Decisão técnica
+
+Foi decidido concentrar as requisições HTTP no arquivo `api.js`, evitando repetir URLs e configurações de `fetch` diretamente nas telas.
+
+Essa organização facilitará a implementação futura de login, tarefas e renovação de tokens.
+
+### Uso de IA
+
+A IA foi utilizada para explicar o funcionamento de `fetch`, `async`, `await`, `try`, `catch`, validações com valores falsos, transformação de objetos em JSON e separação entre lógica de interface e comunicação com a API.
+
+O fluxo completo foi testado e compreendido antes do registro da etapa.
