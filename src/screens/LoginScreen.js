@@ -17,10 +17,7 @@ export default function LoginScreen({navigation}) {
       email: email.trim(),
       password,
     });
-
-    console.log("Access token:", tokens.access);
-    console.log("Refresh token:", tokens.refresh);
-
+    
     Alert.alert(
       "Login realizado!",
       "Você entrou na sua conta com sucesso.",
