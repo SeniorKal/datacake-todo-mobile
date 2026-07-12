@@ -1,6 +1,23 @@
 import { StyleSheet, Text, View, Pressable} from 'react-native';
+import { useEffect } from "react";
+import { checkApiHealth } from "../services/api";
+
+
 
 export default function WelcomeScreen({ navigation }) {
+  
+useEffect(() => {
+    async function testConnection() {
+        try {
+            const data = await checkApiHealth();
+            console.log("API:", data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    testConnection();
+}, []);
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Data Cake</Text>
