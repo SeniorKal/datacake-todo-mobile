@@ -27,3 +27,21 @@ export async function register(userData) {
 
     return data;
 }
+
+export async function login(credentials) {
+  const response = await fetch(`${API_URL}/login/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(credentials),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw data;
+  }
+
+  return data;
+}

@@ -1,9 +1,45 @@
-import { StyleSheet, View, Text, TextInput, Pressable } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Pressable, Alert} from 'react-native';
 import {useState} from 'react';
+import { login as loginUser } from "../services/api";
 
-export default function LoginScreen() {
+export default function LoginScreen({navigation}) {
     const [email, setEmail]= useState('');
     const [password, setPassword]=useState('');
+
+    async function handleLogin() {
+  if (!email.trim() || !password) {
+    Alert.alert("Atenção", "Preencha o e-mail e a senha.");
+    return;
+  }
+
+  try {
+    const tokens = await loginUser({
+      email: email.trim(),
+      password,
+    });
+
+    console.log("Access token:", tokens.access);
+    console.log("Refresh token:", tokens.refresh);
+
+    Alert.alert(
+      "Login realizado!",
+      "Você entrou na sua conta com sucesso.",
+      [
+        {
+          text: "Continuar",
+          onPress: () => navigation.navigate("TaskList"),
+        },
+      ]
+    );
+  } catch (error) {
+    const message =
+      error?.detail ||
+      error?.non_field_errors?.[0] ||
+      "E-mail ou senha inválidos.";
+
+    Alert.alert("Erro no login", message);
+  }
+}
     return (
         <View style={styles.container}>
             <Text style={styles.texto}>Login</Text>
@@ -22,13 +58,7 @@ export default function LoginScreen() {
             />
             <Pressable
                 style={styles.botao} 
-                onPress={() => { 
-                if (email === ""|| password === ""){
-                        alert ('Preencha todos os campos');
-                        return;
-                    }
-                alert('login realizado!');
-            }}
+                onPress={handleLogin}
             >
                 <Text style={styles.textoBotao}>Entrar</Text>
             </Pressable>

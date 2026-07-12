@@ -1,9 +1,18 @@
-import { View, Text } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 
-export default function TaskListScreen() {
+export default function TaskListScreen({navigation}) {
     return (
-        <View>
-            <Text>Task List Screen</Text>
+        <View style={styles.container}>
+            <Text style={styles.texto}>TaskListScreen</Text>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'rgb(40, 42, 54)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});

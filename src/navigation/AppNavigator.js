@@ -18,7 +18,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="Tasks" component={TaskListScreen} />
+        <Stack.Screen name="TaskList" component={TaskListScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
