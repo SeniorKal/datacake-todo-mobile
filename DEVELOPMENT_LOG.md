@@ -528,3 +528,53 @@ Essa organização facilitará a implementação futura de login, tarefas e reno
 A IA foi utilizada para explicar o funcionamento de `fetch`, `async`, `await`, `try`, `catch`, validações com valores falsos, transformação de objetos em JSON e separação entre lógica de interface e comunicação com a API.
 
 O fluxo completo foi testado e compreendido antes do registro da etapa.
+
+## 18. Integração do login/registro aplicativo com a API Django
+
+### Objetivo
+
+Conectar o aplicativo React Native ao backend Django REST Framework para permitir cadastro e autenticação de usuários.
+
+### Alterações realizadas
+
+- Criado o serviço `src/services/api.js` para centralizar as chamadas HTTP.
+- Configurada a URL base da API utilizando o IP da máquina local.
+- Implementada a função de verificação de conexão (`checkApiHealth`).
+- Implementada a função de cadastro (`register`).
+- Implementada a função de login (`loginUser`).
+
+### Integração das telas
+
+#### WelcomeScreen
+
+- Teste automático de conexão com a API utilizando `useEffect`.
+- Validação de comunicação entre aplicativo e backend.
+
+#### RegisterScreen
+
+- Refatoração da lógica do botão para a função `handleRegister`.
+- Integração com o endpoint `/api/register/`.
+- Tratamento de erros enviados pela API.
+- Exibição de mensagens de sucesso e erro para o usuário.
+
+#### LoginScreen
+
+- Refatoração da lógica do botão para a função `handleLogin`.
+- Integração com o endpoint `/api/login/`.
+- Recebimento dos tokens JWT (`access` e `refresh`).
+- Navegação para a tela de tarefas após autenticação.
+
+### Testes realizados
+
+- Cadastro de múltiplos usuários.
+- Validação de e-mail duplicado.
+- Validação de confirmação de senha.
+- Login com credenciais válidas.
+- Login com credenciais inválidas.
+- Navegação automática após autenticação.
+
+### Observações
+
+Nesta etapa os tokens JWT ainda são utilizados apenas durante a sessão do aplicativo.
+
+O armazenamento seguro utilizando `expo-secure-store` será implementado posteriormente.
