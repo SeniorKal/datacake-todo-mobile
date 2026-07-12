@@ -578,3 +578,93 @@ Conectar o aplicativo React Native ao backend Django REST Framework para permiti
 Nesta etapa os tokens JWT ainda são utilizados apenas durante a sessão do aplicativo.
 
 O armazenamento seguro utilizando `expo-secure-store` será implementado posteriormente.
+
+## 19. Integração da tela de tarefas com a API
+
+### Objetivo
+
+Integrar a tela de tarefas do aplicativo React Native ao backend Django, permitindo que as tarefas fossem armazenadas no banco de dados e sincronizadas entre diferentes sessões do aplicativo.
+
+### Alterações realizadas
+
+O arquivo:
+
+```text
+src/services/api.js
+```
+
+foi expandido para centralizar também as requisições relacionadas às tarefas.
+
+Foram implementadas funções responsáveis por:
+
+- listar tarefas;
+- criar tarefas;
+- atualizar tarefas;
+- excluir tarefas.
+
+Todas as requisições passaram a utilizar o token JWT armazenado no dispositivo para autenticação.
+
+### Integração da TaskListScreen
+
+A tela:
+
+```text
+TaskListScreen.js
+```
+
+foi integrada à API.
+
+Foi criada a função:
+
+```text
+loadTasks()
+```
+
+Essa função é responsável por:
+
+- recuperar o token salvo utilizando `expo-secure-store`;
+- solicitar as tarefas do usuário para a API;
+- atualizar o estado da aplicação com os dados recebidos.
+
+A função passou a ser executada automaticamente através do hook:
+
+```javascript
+useEffect()
+```
+
+sempre que a tela é carregada.
+
+### Criação de tarefas
+
+A função responsável por adicionar tarefas foi adaptada para enviar os dados ao backend.
+
+Após a criação de uma nova tarefa, a lista é carregada novamente para manter a interface sincronizada com o banco de dados.
+
+### Atualização e exclusão de tarefas
+
+As funcionalidades de concluir e excluir tarefas também passaram a utilizar a API.
+
+Após cada operação, a lista de tarefas é atualizada automaticamente, garantindo que a interface represente exatamente os dados armazenados no servidor.
+
+### Testes realizados
+
+Foram realizados testes para verificar:
+
+- carregamento das tarefas após o login;
+- criação de novas tarefas;
+- persistência das tarefas após fechar e abrir o aplicativo;
+- atualização do status de conclusão;
+- exclusão definitiva de tarefas;
+- sincronização da lista após cada alteração.
+
+Durante os testes foram identificados e corrigidos problemas relacionados à atualização da interface, sincronização das tarefas concluídas e remoção definitiva das tarefas excluídas.
+
+### Decisão técnica
+
+Foi decidido concentrar todas as requisições relacionadas às tarefas no arquivo `api.js`, deixando a tela responsável apenas pela interface e pelo gerenciamento de estado.
+
+Após qualquer alteração (criação, atualização ou exclusão), a lista é carregada novamente a partir da API para evitar inconsistências entre o estado local e o banco de dados.
+
+### Uso de IA
+
+A IA foi utilizada para explicar o fluxo de comunicação entre o aplicativo e a API, o uso de `async/await`, `try/catch`, armazenamento seguro de tokens com `expo-secure-store`, organização das funções de serviço e sincronização entre o estado do React Native e os dados persistidos no backend.
