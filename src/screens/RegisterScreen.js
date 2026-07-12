@@ -1,10 +1,52 @@
-import {StyleSheet, View, Text, TextInput, Pressable } from 'react-native';
+import {StyleSheet, View, Text, TextInput, Pressable, Alert } from 'react-native';
 import {useState} from 'react';
+import { register as registerUser } from "../services/api";
 
 export default function RegisterScreen({navigation}) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    
+    async function handleRegister() {
+    if (!email.trim() || !password || !confirmPassword) {
+      Alert.alert("Atenção", "Preencha todos os campos.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert("Atenção", "As senhas não coincidem.");
+      return;
+    }
+
+    try {
+      await registerUser({
+        email: email.trim(),
+        password,
+        password_confirm: confirmPassword,
+      });
+
+      Alert.alert(
+        "Conta criada!",
+        "Seu cadastro foi realizado com sucesso.",
+        [
+          {
+            text: "Entrar",
+            onPress: () => navigation.navigate("Login"),
+          },
+        ]
+      );
+    } catch (error) {
+      const message =
+        error?.email?.[0] ||
+        error?.password?.[0] ||
+        error?.password_confirm?.[0] ||
+        error?.detail ||
+        "Não foi possível criar a conta.";
+
+      Alert.alert("Erro no cadastro", message);
+    }
+  }
+    
     return (
         <View style={styles.container}>
             <Text style={styles.texto}>Register</Text>
@@ -30,19 +72,9 @@ export default function RegisterScreen({navigation}) {
             />         
             <Pressable
                 style={styles.botao} 
-                onPress={() => { 
-                if (email === ""|| password === ""|| confirmPassword ===""){
-                    alert ('Preencha todos os campos');
-                    return;
-                }
-                if (password !== confirmPassword){
-                    alert('As senhas não coincidem')
-                    return;
-                }
-                alert('Cadastro realizado!');
-            }}
+                onPress= {handleRegister}
             >
-            <Text style={styles.textobotao}>registrar</Text>
+            <Text style={styles.textobotao}>Criar Conta</Text>
             </Pressable>            
         
         
