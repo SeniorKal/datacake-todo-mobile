@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, TextInput, Pressable, FlatList } from 'react-native';
+import { StyleSheet, Modal, View, Text, TextInput, Pressable, FlatList } from 'react-native';
 import { useState, useEffect } from 'react';
 import * as SecureStore from "expo-secure-store";
 import { getTasks, createTask, updateTask, deleteTask } from "../services/api";
@@ -7,6 +7,10 @@ export default function TaskListScreen({ navigation }) {
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState("");
     const [filter, setFilter] = useState("all");
+    const [editModalVisible, setEditModalVisible] = useState(false);
+    const [editingTask, setEditingTask] = useState(null);
+    const [editedTitle, setEditedTitle] = useState("");
+    const [sortOrder, setSortOrder] = useState("recent");
 
     async function loadTasks() {
         try {
@@ -46,6 +50,17 @@ export default function TaskListScreen({ navigation }) {
         return true;
     });
 
+    const sortedTasks = [...filteredTasks].sort((taskA, taskB) => {
+        const dateA = new Date(taskA.created_at).getTime();
+        const dateB = new Date(taskB.created_at).getTime();
+
+        if (sortOrder === "oldest") {
+            return dateA - dateB;
+        }
+
+        return dateB - dateA;
+    });
+
     async function handleToggleTask(task) {
         try {
             const accessToken =
@@ -73,6 +88,38 @@ export default function TaskListScreen({ navigation }) {
             console.error("Erro ao excluir tarefa:", error);
         }
     }
+
+    function handleOpenEditModal(task) {
+        setEditingTask(task);
+        setEditedTitle(task.title);
+        setEditModalVisible(true);
+    }
+
+    async function handleSaveEdit() {
+        const title = editedTitle.trim();
+
+        if (!title || !editingTask) {
+            return;
+        }
+
+        try {
+            const accessToken =
+                await SecureStore.getItemAsync("accessToken");
+
+            await updateTask(accessToken, editingTask.id, {
+                title,
+            });
+
+            await loadTasks();
+
+            setEditModalVisible(false);
+            setEditingTask(null);
+            setEditedTitle("");
+        } catch (error) {
+            console.error("Erro ao editar tarefa:", error);
+        }
+    }
+
 
     useEffect(() => {
         loadTasks();
@@ -109,6 +156,28 @@ export default function TaskListScreen({ navigation }) {
                     <Text style={styles.textoBotao}>Adicionar</Text>
                 </Pressable>
             </View>
+            <Text style={styles.sectionTitle}>Ordenação:</Text>
+            <View style={styles.sortContainer}>
+                <Pressable
+                    style={[
+                        styles.sortButton,
+                        sortOrder === "recent" && styles.selectedButton,
+                    ]}
+                    onPress={() => setSortOrder("recent")}
+                >
+                    <Text style={styles.buttonText}>Mais recentes</Text>
+                </Pressable>
+
+                <Pressable
+                    style={[
+                        styles.sortButton,
+                        sortOrder === "oldest" && styles.selectedButton,
+                    ]}
+                    onPress={() => setSortOrder("oldest")}
+                >
+                    <Text style={styles.buttonText}>Mais antigas</Text>
+                </Pressable>
+            </View>
             <Text style={styles.texto2}>Lista:</Text>
             <FlatList
                 style={styles.list}
@@ -117,7 +186,7 @@ export default function TaskListScreen({ navigation }) {
                         Nenhuma tarefa encontrada.
                     </Text>
                 }
-                data={filteredTasks}
+                data={sortedTasks}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.taskItem}>
@@ -135,9 +204,51 @@ export default function TaskListScreen({ navigation }) {
                         <Pressable style={styles.deleteButton} onPress={() => handleDeleteTask(item.id)}>
                             <Text style={styles.deleteButtonText}>Excluir</Text>
                         </Pressable>
+                        <Pressable
+                            style={styles.editButton}
+                            onPress={() => handleOpenEditModal(item)}
+                        >
+                            <Text style={styles.editButtonText}>Editar</Text>
+                        </Pressable>
                     </View>
                 )}
             />
+            <Modal
+                visible={editModalVisible}
+                transparent
+                animationType="fade"
+                onRequestClose={() => setEditModalVisible(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Editar tarefa</Text>
+
+                        <TextInput
+                            style={styles.modalInput}
+                            value={editedTitle}
+                            onChangeText={setEditedTitle}
+                            placeholder="Digite o novo título"
+                            autoFocus
+                        />
+
+                        <View style={styles.modalActions}>
+                            <Pressable
+                                style={styles.cancelButton}
+                                onPress={() => setEditModalVisible(false)}
+                            >
+                                <Text style={styles.modalButtonText}>Cancelar</Text>
+                            </Pressable>
+
+                            <Pressable
+                                style={styles.saveButton}
+                                onPress={handleSaveEdit}
+                            >
+                                <Text style={styles.modalButtonText}>Salvar</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
@@ -238,5 +349,102 @@ const styles = StyleSheet.create({
         color: "#ffffff",
         fontSize: 12,
         fontWeight: "bold",
+    },
+    editButton: {
+        backgroundColor: "#6272a4",
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderRadius: 6,
+        marginLeft: 10,
+    },
+
+    editButtonText: {
+        color: "#ffffff",
+        fontSize: 12,
+        fontWeight: "bold",
+    },
+
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: "rgba(0, 0, 0, 0.6)",
+        justifyContent: "center",
+        paddingHorizontal: 24,
+    },
+
+    modalContent: {
+        backgroundColor: "#343746",
+        borderRadius: 12,
+        padding: 20,
+    },
+
+    modalTitle: {
+        color: "#ffffff",
+        fontSize: 20,
+        fontWeight: "bold",
+        marginBottom: 16,
+    },
+
+    modalInput: {
+        backgroundColor: "#ffffff",
+        borderRadius: 8,
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+        fontSize: 16,
+    },
+
+    modalActions: {
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        marginTop: 20,
+        gap: 10,
+    },
+
+    cancelButton: {
+        backgroundColor: "#666666",
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        borderRadius: 8,
+    },
+
+    saveButton: {
+        backgroundColor: "#50c878",
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        borderRadius: 8,
+    },
+
+    modalButtonText: {
+        color: "#ffffff",
+        fontWeight: "bold",
+    },
+    sectionTitle: {
+        color: "#ffffff",
+        fontSize: 18,
+        marginTop: 18,
+        marginBottom: 10,
+    },
+
+    sortContainer: {
+        flexDirection: "row",
+        gap: 10,
+        marginBottom: 18,
+    },
+
+    sortButton: {
+        flex: 1,
+        backgroundColor: "#44475a",
+        paddingVertical: 12,
+        borderRadius: 10,
+        alignItems: "center",
+    },
+
+    selectedButton: {
+        backgroundColor: "#12c978",
+    },
+
+    buttonText: {
+        color: "#ffffff",
+        fontSize: 15,
+        fontWeight: "600",
     },
 });
