@@ -668,3 +668,61 @@ Após qualquer alteração (criação, atualização ou exclusão), a lista é c
 ### Uso de IA
 
 A IA foi utilizada para explicar o fluxo de comunicação entre o aplicativo e a API, o uso de `async/await`, `try/catch`, armazenamento seguro de tokens com `expo-secure-store`, organização das funções de serviço e sincronização entre o estado do React Native e os dados persistidos no backend.
+
+## 20. Implementação da ordenação de tarefas por data de criação
+
+### Objetivo
+
+Adicionar uma funcionalidade para permitir ao usuário organizar a lista de tarefas por data de criação, exibindo primeiro as tarefas mais recentes ou as mais antigas.
+
+### Alterações realizadas
+
+Foi adicionada uma nova seção de ordenação na tela:
+
+```text
+TaskListScreen.js
+```
+
+Foram criados dois modos de ordenação:
+
+- Mais recentes;
+- Mais antigas.
+
+Foi adicionado um novo estado responsável por armazenar a opção de ordenação selecionada pelo usuário.
+
+Antes da renderização da lista, as tarefas passam por um processo de ordenação utilizando a propriedade:
+
+```text
+created_at
+```
+
+retornada pela API Django.
+
+A ordenação é aplicada após o filtro por status, garantindo que ambas as funcionalidades funcionem em conjunto.
+
+### Interface
+
+Foram adicionados dois botões para alternar entre os modos de ordenação.
+
+O botão atualmente selecionado recebe uma estilização diferente para indicar visualmente qual ordenação está ativa.
+
+### Testes realizados
+
+Foram realizados testes para verificar:
+
+- ordenação das tarefas da mais recente para a mais antiga;
+- ordenação das tarefas da mais antiga para a mais recente;
+- funcionamento conjunto com os filtros de tarefas pendentes e concluídas;
+- atualização correta da lista após criar, editar, concluir e excluir tarefas.
+
+Durante os testes foram corrigidos problemas relacionados à ordenação antes da renderização da lista e à posição dos controles de ordenação na interface.
+
+### Decisão técnica
+
+Foi decidido realizar a ordenação diretamente no frontend utilizando os dados recebidos da API, evitando novas requisições ao backend sempre que o usuário alterar o modo de exibição.
+
+A ordenação é feita sobre uma cópia da lista filtrada, preservando o estado original armazenado pela aplicação.
+
+### Uso de IA
+
+A IA foi utilizada para explicar o funcionamento da função `sort()`, a comparação entre datas utilizando objetos `Date`, a importância de ordenar uma cópia do array para evitar alterações diretas no estado do React e a melhor forma de integrar a ordenação ao fluxo já existente de filtros da aplicação.
