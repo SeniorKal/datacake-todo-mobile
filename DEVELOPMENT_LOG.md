@@ -726,3 +726,70 @@ A ordenação é feita sobre uma cópia da lista filtrada, preservando o estado 
 ### Uso de IA
 
 A IA foi utilizada para explicar o funcionamento da função `sort()`, a comparação entre datas utilizando objetos `Date`, a importância de ordenar uma cópia do array para evitar alterações diretas no estado do React e a melhor forma de integrar a ordenação ao fluxo já existente de filtros da aplicação.
+
+## 21. Implementação do logout seguro
+
+### Objetivo
+
+Adicionar uma funcionalidade para permitir que o usuário encerre sua sessão de forma segura, removendo os tokens de autenticação armazenados no dispositivo e retornando à tela de login.
+
+### Alterações realizadas
+
+Foi implementada a função:
+
+```text
+handleLogout()
+```
+
+na tela:
+
+```text
+TaskListScreen.js
+```
+
+Essa função é responsável por exibir uma confirmação antes de realizar o logout do usuário.
+
+Após a confirmação, os tokens JWT armazenados através do `expo-secure-store` são removidos do dispositivo utilizando:
+
+```javascript
+SecureStore.deleteItemAsync()
+```
+
+Em seguida, o usuário é redirecionado para a tela de login utilizando:
+
+```javascript
+navigation.replace("Login")
+```
+
+### Interface
+
+Foi adicionado um botão "Sair" ao cabeçalho da tela de tarefas.
+
+Ao pressioná-lo, o aplicativo exibe um alerta de confirmação com duas opções:
+
+- Cancelar;
+- Sair.
+
+Essa confirmação evita que o logout seja realizado acidentalmente.
+
+### Testes realizados
+
+Foram realizados testes para verificar:
+
+- exibição correta do botão de logout;
+- funcionamento do alerta de confirmação;
+- remoção dos tokens de autenticação;
+- retorno automático para a tela de login;
+- impossibilidade de continuar utilizando a sessão após o logout.
+
+Todos os testes apresentaram o comportamento esperado.
+
+### Decisão técnica
+
+Foi utilizado o método `deleteItemAsync()` do `expo-secure-store` para garantir que os tokens fossem removidos do armazenamento seguro do dispositivo.
+
+Também foi utilizado `navigation.replace()` em vez de `navigate()` para impedir que o usuário retornasse à tela de tarefas utilizando o botão de voltar do dispositivo.
+
+### Uso de IA
+
+A IA foi utilizada para explicar o fluxo completo de logout utilizando JWT, a remoção segura dos tokens armazenados no dispositivo, o uso de `expo-secure-store`, o funcionamento do `Alert` do React Native e a diferença entre `navigate()` e `replace()` no controle da navegação.
