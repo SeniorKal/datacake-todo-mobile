@@ -1,4 +1,4 @@
-import { StyleSheet, Modal, View, Text, TextInput, Pressable, FlatList } from 'react-native';
+import { StyleSheet, Modal, View, Text, TextInput, Pressable, FlatList, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import * as SecureStore from "expo-secure-store";
 import { getTasks, createTask, updateTask, deleteTask } from "../services/api";
@@ -120,6 +120,33 @@ export default function TaskListScreen({ navigation }) {
         }
     }
 
+    async function handleLogout() {
+        Alert.alert(
+            "Sair",
+            "Deseja realmente sair da sua conta?",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel",
+                },
+                {
+                    text: "Sair",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            await SecureStore.deleteItemAsync("accessToken");
+                            await SecureStore.deleteItemAsync("refreshToken");
+
+                            navigation.replace("Login");
+                        } catch (error) {
+                            console.error("Erro ao realizar logout:", error);
+                        }
+                    },
+                },
+            ]
+        );
+    }
+
 
     useEffect(() => {
         loadTasks();
@@ -127,9 +154,16 @@ export default function TaskListScreen({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.texto}>Minhas Tarefas</Text>
-            <Text style={styles.texto2}>Filtro:</Text>
+            <View style={styles.header}>
+                <Text style={styles.texto}>Minhas Tarefas</Text>
 
+                <Pressable
+                    style={styles.logoutButton}
+                    onPress={handleLogout}
+                >
+                    <Text style={styles.logoutButtonText}>Sair</Text>
+                </Pressable>
+            </View>
             <View style={styles.botoesContainer}>
                 <Pressable style={styles.botao} onPress={() => setFilter("all")}>
                     <Text style={styles.textoBotao}>Todas</Text>
@@ -446,5 +480,24 @@ const styles = StyleSheet.create({
         color: "#ffffff",
         fontSize: 15,
         fontWeight: "600",
+    },
+    header: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 0,
+        marginTop: 10,
+    },
+
+    logoutButton: {
+        backgroundColor: "#ff5555",
+        paddingVertical: 8,
+        paddingHorizontal: 14,
+        borderRadius: 8,
+    },
+
+    logoutButtonText: {
+        color: "#fff",
+        fontWeight: "bold",
     },
 });
