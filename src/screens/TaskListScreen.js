@@ -1,4 +1,4 @@
-import { StyleSheet, Modal, View, Text, TextInput, Pressable, FlatList, Alert } from 'react-native';
+import { StyleSheet, Modal, View, Text, TextInput, Pressable, FlatList, Alert, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 import * as SecureStore from "expo-secure-store";
 import { getTasks, createTask, updateTask, deleteTask } from "../services/api";
@@ -11,8 +11,14 @@ export default function TaskListScreen({ navigation }) {
     const [editingTask, setEditingTask] = useState(null);
     const [editedTitle, setEditedTitle] = useState("");
     const [sortOrder, setSortOrder] = useState("recent");
+    const [isLoading, setIsLoading] = useState(true);
+
+    function getErrorMessage(error, fallbackMessage) {
+        return error?.title?.[0] || error?.detail || fallbackMessage;
+    }
 
     async function loadTasks() {
+        setIsLoading(true);
         try {
             const acessToken = await SecureStore.getItemAsync("accessToken");
             const data = await getTasks(acessToken);
@@ -20,12 +26,19 @@ export default function TaskListScreen({ navigation }) {
         }
         catch (error) {
             console.error("Erro ao carregar tarefas:", error);
+            Alert.alert(
+                "Erro ao carregar",
+                getErrorMessage(error, "Não foi possível carregar as tarefas.")
+            );
+        } finally {
+            setIsLoading(false);
         }
     }
 
     async function handleAddTask() {
         const title = newTask.trim();
         if (!title) {
+            Alert.alert("Atenção", "Digite um título para a tarefa.");
             return;
         }
         try {
@@ -35,6 +48,10 @@ export default function TaskListScreen({ navigation }) {
             setNewTask("");
         } catch (error) {
             console.error('Error creating task remotely:', error);
+            Alert.alert(
+                "Erro ao adicionar",
+                getErrorMessage(error, "Não foi possível adicionar a tarefa.")
+            );
         }
     }
 
@@ -73,6 +90,10 @@ export default function TaskListScreen({ navigation }) {
             await loadTasks();
         } catch (error) {
             console.error("Erro ao atualizar tarefa:", error);
+            Alert.alert(
+                "Erro ao atualizar",
+                getErrorMessage(error, "Não foi possível atualizar a tarefa.")
+            );
         }
     }
 
@@ -86,6 +107,10 @@ export default function TaskListScreen({ navigation }) {
             await loadTasks();
         } catch (error) {
             console.error("Erro ao excluir tarefa:", error);
+            Alert.alert(
+                "Erro ao excluir",
+                getErrorMessage(error, "Não foi possível excluir a tarefa.")
+            );
         }
     }
 
@@ -99,6 +124,7 @@ export default function TaskListScreen({ navigation }) {
         const title = editedTitle.trim();
 
         if (!title || !editingTask) {
+            Alert.alert("Atenção", "Digite um título para a tarefa.");
             return;
         }
 
@@ -117,6 +143,10 @@ export default function TaskListScreen({ navigation }) {
             setEditedTitle("");
         } catch (error) {
             console.error("Erro ao editar tarefa:", error);
+            Alert.alert(
+                "Erro ao editar",
+                getErrorMessage(error, "Não foi possível editar a tarefa.")
+            );
         }
     }
 
@@ -140,6 +170,10 @@ export default function TaskListScreen({ navigation }) {
                             navigation.replace("Login");
                         } catch (error) {
                             console.error("Erro ao realizar logout:", error);
+                            Alert.alert(
+                                "Erro ao sair",
+                                "Não foi possível encerrar a sessão. Tente novamente."
+                            );
                         }
                     },
                 },
@@ -213,6 +247,13 @@ export default function TaskListScreen({ navigation }) {
                 </Pressable>
             </View>
             <Text style={styles.texto2}>Lista:</Text>
+            {isLoading ? (
+                <ActivityIndicator
+                    style={styles.loadingIndicator}
+                    size="large"
+                    color="#14ca6f"
+                />
+            ) : (
             <FlatList
                 style={styles.list}
                 ListEmptyComponent={
@@ -247,6 +288,7 @@ export default function TaskListScreen({ navigation }) {
                     </View>
                 )}
             />
+            )}
             <Modal
                 visible={editModalVisible}
                 transparent
@@ -356,6 +398,9 @@ const styles = StyleSheet.create({
     list: {
         width: "100%",
         marginTop: 10,
+    },
+    loadingIndicator: {
+        marginTop: 30,
     },
     emptyText: {
         color: "#aaaaaa",
